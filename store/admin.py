@@ -3,6 +3,7 @@ from django.db.models import Count
 from django.utils.html import format_html
 from django.urls import reverse
 from . import models
+from tags.models import Tag
 
 @admin.register(models.Collection)
 class CollectionAdmin(admin.ModelAdmin):
@@ -35,6 +36,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     autocomplete_fields = ['collection']
 
+
     @admin.display(ordering='inventory')
     def inventory_status(self, product):
         if product.inventory < 1:
@@ -54,12 +56,21 @@ class CustomerAdmin(admin.ModelAdmin):
     list_per_page = 10
     search_fields = ['phone_no__istartswith']
 
+class OrderItemInline(admin.TabularInline):
+    model = models.OrderItem
+    autocomplete_fields = ['product']
+    extra = 0
+    min_num = 1
+
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['placed_at','customer']
     list_per_page = 10
     search_fields = ['customer__phone__istartswith']
     autocomplete_fields = ['customer']
+    inlines = [OrderItemInline]
+
 
 @admin.register(models.OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
@@ -68,11 +79,13 @@ class OrderItemAdmin(admin.ModelAdmin):
     autocomplete_fields = ['order','product']
     search_fields = ['product__title__istartswith']
 
+
 @admin.register(models.Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = ['cart_id','created_at']
     list_per_page = 10
     search_fields = ['cart_id__istartswith']
+
 
 @admin.register(models.CartItem)
 class CartItemAdmin(admin.ModelAdmin):

@@ -4,14 +4,22 @@ from uuid import uuid4
 # Create your models here.
 class Collection(models.Model):
     label = models.CharField(max_length=255)
+    
+    def __str__(self) -> str:
+        return self.label
+    
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT, related_name='products',blank=True, null=True)
+    inventory = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.title
 
     
 class Customer(models.Model):
@@ -28,6 +36,9 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True)
     membership = models.CharField(max_length=1, choices=MEMEBERSHIP_CHOICES, default=MEMEBERSHIP_BRONE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f'{self.phone}'
 
 
 class Cart(models.Model):

@@ -25,5 +25,6 @@ admin.site.index_title = "Welcome to Practise Admin Portal"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('store/', include('store.urls')),
     path('debug/', include('debug_toolbar.urls')),
 ]
